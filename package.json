@@ -1,0 +1,12 @@
+{
+  "name": "img-quantization",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:ngawung/img-quantization.git",
+  "author": "Ferdian <ferdian.artwork@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "eruda": "^2.4.1",
+    "rgbquant": "^1.1.2"
+  }
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Image Quantization</title>
+    
+    <script src="node_modules/eruda/eruda.js"></script>
+    <script>eruda.init();</script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.min.js" integrity="sha512-mMe7BAZPOkGbq+zhRBMNV3Q+5ZDzcUEOJoUYXbHpEcODkDBYbttaW7P108jX66AQgwgsAjvlP4Ayb/XLJZfmsg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/rgbquant.js" defer></script>
+    <script src="/script.js" defer></script>
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    
+    
+    <style>
+      body {
+        margin: 0 auto;
+        max-width: 600px;
+        min-height: 1300px;
+        font-family: Monospace;
+        font-weight: bold;
+      }
+      div {
+        padding: 10px;
+      }
+      
+/*       #config input {
+        width: 60px;
+        height: 30px;
+        margin-right: 15px;
+      } */
+      
+      #conig span {
+        font-weight: bold !important;
+      }
+      
+      canvas {
+        max-width: 80%;
+        image-rendering: optimizeSpeed;             /* Older versions of FF          */
+        image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+        image-rendering: -webkit-optimize-contrast; /* Safari                        */
+        image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+        image-rendering: pixelated;                 /* Awesome future-browsers       */
+        -ms-interpolation-mode: nearest-neighbor;   /* IE 
+/*         position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translate(-50%, 0); */
+/*         opacity: 1; */
+      }
+      
+      .canvas-top {
+        max-width: 80%;
+        position: absolute;
+/*         top: 10px; */
+        left: 50%;
+        transform: translate(-50%, 0);
+        opacity: 1;
+      }
+      
+      #canvas-container {
+        position: relative;
+        text-align: center;
+        padding: 0;
+      }
+      
+      .box {
+        border: 2px solid #a81b41;
+        color: #a81b41;
+      }
+      
+      .stick {
+        position: fixed;
+        bottom: 0;
+        z-index: 9999;
+      }
+      
+      .pal {
+        width: 10px;
+        height: 10px;
+        margin: 5px;
+        display: inline-block;
+        overflow: hidden;
+/*         margin-bottom: 50px; */
+      }
+    </style>
+    
+  </head>
+  <body>
+    
+    <div class="box" id="config">
+      <span>Colors: </span> 
+      <a href="#" onclick="showAlert('desired palette size, Default 256')">?</a>
+      <input type="number" value="256" id="colors">
+      
+      <span>minHueCols: </span>
+      <a href="#" onclick="showAlert('# of colors per hue group to evaluate regardless of counts, to retain low-count hues, Default 0')">?</a>
+      <input type="number" value="0" id="minHueCols">
+      
+      <span>DithKern: </span>
+      <a href="#" onclick="showAlert('dithering kernel name')">?</a>
+      <select id="dithkern">
+          <option value="null">NONE</option>
+          <option value="FloydSteinberg">FloydSteinberg</option>
+          <option value="FalseFloydSteinberg">FalseFloydSteinberg</option>
+          <option value="Stucki">Stucki</option>
+          <option value="Atkinson">Atkinson</option>
+          <option value="Jarvis">Jarvis</option>
+          <option value="Burkes">Burkes</option>
+          <option value="Sierra">Sierra</option>
+          <option value="TwoSierra">TwoSierra</option>
+          <option value="SierraLite">SierraLite</option>
+        </select>
+      
+      <span>DithSerp: </span>
+      <a href="#" onclick="showAlert('enable serpentine pattern dithering')">?</a>
+      <select id="dithserp">
+          <option value="false">False</option>
+          <option value="true">true</option>
+        </select>
+      <br>
+      <span>Palette: </span>
+      <a href="#" onclick="showAlert('a predefined palette to start with')">?</a>
+      <input type="file" id="palette" accept="image/png, image/jpeg">
+      <a href="#" onclick="resetPalette()">clear</a>
+      <br>
+      <span>NumPalette: </span> 
+      <a href="#" onclick="showAlert('desired palette size, Default 5, only if Pallete defined')">?</a>
+      <input type="number" value="5" id="numpalette">
+
+      <div>
+        <button onclick="setSize(1)">1x</button>
+        <button onclick="setSize(1.5)"x">1.5x</button>
+        <button onclick="setSize(2)">2x</button>
+        <button onclick="setSize(3)">3x</button>
+        <button onclick="setSize(4)">4x</button>
+      </div>
+    </div>
+    
+    <div class="stick">
+      <button id="convert">Convert</button>
+      <button id="download">Download</button>
+    </div>
+    
+    <div>
+      <input type="file" id="input" accept="image/png, image/jpeg">
+    </div>
+    
+    <div style="text-align: center">
+      <button id="toggle">Show Original</button>
+    </div>
+    
+    <div id="canvas-container">
+      <canvas id="original"></canvas>
+      <canvas class="canvas-top" id="canvas"></canvas>
+    </div>
+    
+    <div id="palette-list">
+      
+    </div>
+    
+  </body>
+</html>
